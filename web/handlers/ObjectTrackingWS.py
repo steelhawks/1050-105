@@ -12,6 +12,7 @@ class ObjectTrackingWS(WebSocketHandler):
     watchers = set()
     def open(self):
         logger.info("ObjectTracking websocket opened")
+        self.write_message('connected')
         ObjectTrackingWS.watchers.add(self)
 
     def check_origin(self, origin):

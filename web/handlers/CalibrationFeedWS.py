@@ -9,6 +9,7 @@ class CalibrationFeedWS(WebSocketHandler):
     """
     watchers = set()
     def open(self):
+        self.write_message('connected')
         self.uid = str(uuid.uuid4())
         logger.info("CalibrationFeed websocket opened %s" % self.uid)
         self.write_message(json.dumps({

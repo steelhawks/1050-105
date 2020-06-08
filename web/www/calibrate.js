@@ -92,7 +92,7 @@ new Vue({
   },
   methods: {
     toggleCalibrationFeed: function() {
-      this.controls_ws.send(JSON.stringify({request_type: 'contols',
+      this.controls_ws.send(JSON.stringify({request_type: 'controls',
                                           enable_calibration_feed: !this.enable_calibration_feed}))
     },
     changeProfile: function(profile) {
