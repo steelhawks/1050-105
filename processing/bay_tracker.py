@@ -8,17 +8,18 @@ for the bay
 """
 
 import cv2
+import numpy as np
 from processing import colors
 from processing import cvfilters
 from processing import shape_util
 
-MIN_AREA = 50
+MIN_AREA = 100
 BAY_LENGTH = 7
 
 LEFT_STRIP = 'LEFT'
 RIGHT_STRIP = 'RIGHT'
 
-WIDTH_TO_HEIGHT_RATIO = 7 / 11 
+WIDTH_TO_HEIGHT_RATIO = 3.3 / 5.8 
 
 debug = False
 
@@ -59,47 +60,85 @@ def process(img, camera, frame_cnt, color_profile):
         # print(orientation)
         rect = cv2.minAreaRect(contour)
         orientation = rect[2]
-        print(orientation)
+        box = cv2.boxPoints(rect)
+        box = np.int0(box)
+        cv2.drawContours(original_img, [box], 0, (0, 0, 255), 2)
+        cv2.putText(original_img, str(orientation), (x, y + h + 35), cv2.FONT_HERSHEY_DUPLEX, .4, colors.WHITE, 1, cv2.LINE_AA)
+        #print(orientation)
         # limit the number of contours to process
         
         num_vertices = shape_util.find_vertices(contour)
         if area > MIN_AREA:
+            orientation = abs(orientation)
             strip_type = 'NOT VALID'
-            if orientation < -5 and orientation > -25:
+            if orientation > 2.5 and orientation < 25:
                 strip_type = RIGHT_STRIP
-                print(RIGHT_STRIP)
-            elif orientation < -65 and orientation > -85:
+                # print(RIGHT_STRIP)
+            elif orientation > 65 and orientation < 87.5:
                 strip_type = LEFT_STRIP
-                print(LEFT_STRIP)
+                # print(LEFT_STRIP)
 
             contour_list.append(contour)
             contour_properties_list.append([x, y, w, h, strip_type])
-            # shape_util.dimensions_match(contour, 4, 2, WIDTH_TO_HEIGHT_RATIO) and 
-            if strip_type == RIGHT_STRIP:
 
-                left_contour_properties = None
+            if strip_type != 'NOT_VALID':
+
+                other_contour_properties = None
 
                 i = len(contour_properties_list) - 1
 
                 while i >= 0:
-                    if contour_properties_list[i][4] == LEFT_STRIP:
-                        print('found strip')
-                        left_contour_properties = contour_properties_list[i]
-                        i = 0
+                    if strip_type == LEFT_STRIP and contour_properties_list[i][4] != LEFT_STRIP:
+                        if contour_properties_list[i][0] > x:
+                            # print('found strip')
+                            # print(strip_type)
+                            # print(contour_properties_list[i])
+                            # print('----')
+                            other_contour_properties = contour_properties_list[i]
+                            contour_properties_list.pop(i)
+                            i = 0
+                    elif strip_type == RIGHT_STRIP and contour_properties_list[i][4] != RIGHT_STRIP:
+                        if contour_properties_list[i][0] < x:
+                            # print('found strip')
+                            # print(strip_type)
+                            # print(contour_properties_list[i])
+                            # print('----')
+                            other_contour_properties = contour_properties_list[i]
+                            contour_properties_list.pop(i)
+                            i = 0    
                     i = i - 1
 
-                if left_contour_properties != None:
+                if other_contour_properties != None:
                     
-                    center_mass_x_left = left_contour_properties[0] + left_contour_properties[2] / 2
-                    center_mass_y_left = left_contour_properties[1] + left_contour_properties[3] / 2
+                    center_mass_x_other = other_contour_properties[0] + other_contour_properties[2] / 2
+                    center_mass_y_other = other_contour_properties[1] + other_contour_properties[3] / 2
 
                     center_mass_x_right = x + w / 2
                     center_mass_y_right = y + h / 2
 
-                    center_mass_x_avg = (center_mass_x_left + center_mass_x_right) / 2
-                    center_mass_y_avg = (center_mass_y_left + center_mass_y_right) / 2
+                    center_mass_x_avg = (center_mass_x_other + center_mass_x_right) / 2
+                    center_mass_y_avg = (center_mass_y_other + center_mass_y_right) / 2
 
-                    distance = shape_util.distance_in_inches(((x - left_contour_properties[0]) + w))
+                    width = 0
+                    xstart = 0
+                    xend = 0
+                    height = 0
+
+                    if strip_type == RIGHT_STRIP:
+
+                        width = x - other_contour_properties[0] + w
+                        xstart = other_contour_properties[0]
+                        xend = other_contour_properties[0] + width
+                        height = h
+
+                    elif strip_type == LEFT_STRIP:
+
+                        width = other_contour_properties[0] - x + other_contour_properties[2]
+                        xstart = x
+                        xend = x + width
+                        height = h
+
+                    distance = shape_util.distance_in_inches((abs(x - other_contour_properties[0]) + w))
                     angle = shape_util.get_angle(camera, center_mass_x_avg, center_mass_y_avg)
                     
                     if isinstance(distance, complex):
@@ -108,8 +147,8 @@ def process(img, camera, frame_cnt, color_profile):
                     font = cv2.FONT_HERSHEY_DUPLEX
 
                     data = dict(shape='BAY',
-                            width=((x - left_contour_properties[0]) + w),
-                            height=h,
+                            width=width,
+                            height=height,
                             dist=distance,
                             angle=angle,
                             xpos=center_mass_x_avg,
@@ -119,7 +158,7 @@ def process(img, camera, frame_cnt, color_profile):
 
                     vertices_text = 'vertices:%s' % (num_vertices)
                     coordinate_text = 'x:%s y:%s ' % (center_mass_x_avg, center_mass_y_avg)
-                    area_text = 'width:%s height:%s' % (((x - left_contour_properties[0]) + w), h)
+                    area_text = 'width:%s height:%s' % (width, height)
                     angle_text = 'angle:%.2f  distance:%.2f' % (angle, distance)
 
                     cv2.putText(original_img, coordinate_text, (x, y - 35), font, .4, colors.WHITE, 1, cv2.LINE_AA)
@@ -127,7 +166,7 @@ def process(img, camera, frame_cnt, color_profile):
                     cv2.putText(original_img, angle_text, (x, y - 5), font, .4, colors.WHITE, 1, cv2.LINE_AA)
                     cv2.putText(original_img, vertices_text, (x, y - 50), font, .4, colors.WHITE, 1, cv2.LINE_AA)
 
-                    cv2.rectangle(original_img, (left_contour_properties[0], left_contour_properties[1]), (((x - left_contour_properties[0]) + w + left_contour_properties[0]), ((y - left_contour_properties[1]) + h + left_contour_properties[1])), colors.GREEN, 2)
+                    cv2.rectangle(original_img, (xstart, y), (xend, height + y), colors.GREEN, 2)
                     #cv2.drawContours(original_img, contours, index, colors.random(), 2)
                     #cv2.circle(original_img, (int(center_mass_x), int(center_mass_y)), 5, colors.GREEN, -1)
                     cv2.line(original_img, (FRAME_WIDTH // 2, FRAME_HEIGHT), (int(center_mass_x_avg), int(center_mass_y_avg)), colors.GREEN, 2)
