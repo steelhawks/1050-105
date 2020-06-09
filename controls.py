@@ -13,6 +13,7 @@ class Controls():
         self.enable_calibration_feed = False
         self.enable_processing_feed = True
         self.enable_dual_camera = False
+        self.enable_read_image = True
         self.send_tracking_data = True
 
         self.camera_mode = CAMERA_MODE_LOADING_BAY
