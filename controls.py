@@ -15,7 +15,7 @@ class Controls():
         self.enable_dual_camera = False
         self.send_tracking_data = True
 
-        self.camera_mode = CAMERA_MODE_RAW
+        self.camera_mode = CAMERA_MODE_LOADING_BAY
         self.enable_feed = True
         self.color_profiles = {}
 
