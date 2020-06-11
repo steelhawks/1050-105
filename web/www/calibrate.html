@@ -36,6 +36,18 @@
             <i class="form-icon"></i> Calibration Feed
           </label>
         </div>
+
+        <!-- Image Selector  -->
+        <div>
+          <input ref="imageSelector" type="file" accept="image/jpeg, image/png" @change="changeImage">
+          <button class="btn btn-primary" @click="loadImage">Load Image</button>
+          <br>
+
+          <label v-if="preview_display" for="preview">Image Preview</label>
+          <img id="preview" class="mt-3" ref="previewImage" src="" width="200" />
+
+        </div>
+
       </div>
 
     </div>

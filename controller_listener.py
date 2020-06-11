@@ -1,5 +1,8 @@
 import logging
 from controls import main_controller
+from shutil import copyfileobj
+import urllib.request as request
+import os
 import websocket
 import json
 import _thread as thread
@@ -48,6 +51,13 @@ def start(websocket_url):
             current_profile.update(profile)
 
         #logger.info(main_controller.color_profiles)
+
+        if 'image_data' in controls:
+            dir_path = os.path.dirname(os.path.realpath(__file__))
+            url = controls['image_data']
+            # logger.info(url)
+            with request.urlopen(url) as new_file, open("test-image.jpg", 'wb') as out_file:
+                copyfileobj(new_file, out_file)
 
     def ws_closed(ws):
         logger.info('closed socket')

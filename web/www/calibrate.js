@@ -11,7 +11,8 @@ new Vue({
     selected_color_mode: null,
     selected_profile: null,
     controls_ws: null,
-    apply_mask: false
+    apply_mask: false,
+    preview_display: false,
   },
   computed: {
     "values": function(){
@@ -129,6 +130,28 @@ new Vue({
         var self = this;
         self.controls_ws.send(JSON.stringify({'color_profile': self.selected_profile,
                                               'reset': true}))
+    },
+    changeImage: function() {
+        var input = this.$refs.imageSelector;
+        var reader = new FileReader();
+
+        reader.onload = (e) => {
+            this.preview_display = true;
+            var preview = this.$refs.previewImage;
+            preview.src = e.target.result;
+            preview.style.width = input.style.width;
+            preview.style.display = 'block';
+            this.newImage = e.target.result;
+        }
+        reader.readAsDataURL(input.files[0]);
+
+    },
+
+    loadImage: function() {
+        if(this.newImage){
+            console.log('loading new image');
+            this.controls_ws.send(JSON.stringify({'image_data': this.newImage}));
+        }
     }
   }
 });
