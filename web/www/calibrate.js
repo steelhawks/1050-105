@@ -131,6 +131,10 @@ new Vue({
         self.controls_ws.send(JSON.stringify({'color_profile': self.selected_profile,
                                               'reset': true}))
     },
+    saveMask: function() {
+        var self = this;
+        self.controls_ws.send(JSON.stringify({ request_type: 'saveMask' }))
+    },
     changeImage: function() {
         var input = this.$refs.imageSelector;
         var reader = new FileReader();

@@ -13,6 +13,10 @@ from processing import colors
 from processing import cvfilters
 from processing import shape_util
 
+import controls
+from controls import main_controller
+import uuid
+
 MIN_AREA = 100
 BAY_LENGTH = 7
 
@@ -41,6 +45,13 @@ def process(img, camera, frame_cnt, color_profile):
     img = cv2.dilate(img, None, iterations=2)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
+    if main_controller.save_mask:
+        id = uuid.uuid4()
+        image_name = './maskPictures/' + str(id) + '.jpg'
+        cv2.imwrite(image_name, img)
+        print('saving bay mask ' + image_name)
+        main_controller.save_mask = False
+        
     # if debug:
     #     cv2.imshow('hsv', img)
 

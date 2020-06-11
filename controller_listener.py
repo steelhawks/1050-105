@@ -1,4 +1,5 @@
 import logging
+import config
 from controls import main_controller
 from shutil import copyfileobj
 import urllib.request as request
@@ -21,6 +22,8 @@ def start(websocket_url):
 
             if controls['request_type'] == 'calibration':
                 main_controller.calibration = controls
+            if controls['request_type'] == 'saveMask':
+                main_controller.save_mask = True
 
 
         if 'controls' in controls:
@@ -54,6 +57,7 @@ def start(websocket_url):
 
         if 'image_data' in controls:
             dir_path = os.path.dirname(os.path.realpath(__file__))
+            fileString = __file__
             url = controls['image_data']
             # logger.info(url)
             with request.urlopen(url) as new_file, open("test-image.jpg", 'wb') as out_file:
