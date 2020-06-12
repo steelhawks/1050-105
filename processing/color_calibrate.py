@@ -10,6 +10,7 @@ import cv2
 from controls import main_controller
 from . import colors
 from processing import cvfilters
+import json
 
 def process(image,
             camera_mode='RAW',
@@ -66,5 +67,16 @@ def process(image,
                     colors.BLUE,
                     1,
                     cv2.LINE_AA)
+
+    if main_controller.save_mask:
+        with open('./image_name.json') as json_file:
+            data = json.load(json_file)
+            data = data['image_name'].split(".")
+            image_name = data[0] + " (MASK)." + data[1]
+            print(image_name)
+            image_path = './maskPictures/' + image_name
+            cv2.imwrite(image_path, image)
+            print('saving ball mask ' + image_name)
+            main_controller.save_mask = False
 
     return image

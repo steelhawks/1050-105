@@ -56,9 +56,11 @@ def start(websocket_url):
         #logger.info(main_controller.color_profiles)
 
         if 'image_data' in controls:
-            dir_path = os.path.dirname(os.path.realpath(__file__))
-            fileString = __file__
             url = controls['image_data']
+            image_name = controls['image_name']
+            name_json = {'image_name': image_name}
+            with open('image_name.json', 'w') as outfile:
+                json.dump(name_json, outfile)
             # logger.info(url)
             with request.urlopen(url) as new_file, open("test-image.jpg", 'wb') as out_file:
                 copyfileobj(new_file, out_file)

@@ -148,13 +148,13 @@ new Vue({
             this.newImage = e.target.result;
         }
         reader.readAsDataURL(input.files[0]);
-
+        this.image_name = input.value.split("\\").pop();
     },
 
     loadImage: function() {
         if(this.newImage){
             console.log('loading new image');
-            this.controls_ws.send(JSON.stringify({'image_data': this.newImage}));
+            this.controls_ws.send(JSON.stringify({'image_data': this.newImage, 'image_name': this.image_name}));
         }
     }
   }
