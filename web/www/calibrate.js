@@ -140,22 +140,12 @@ new Vue({
         var reader = new FileReader();
 
         reader.onload = (e) => {
-            this.preview_display = true;
-            var preview = this.$refs.previewImage;
-            preview.src = e.target.result;
-            preview.style.width = input.style.width;
-            preview.style.display = 'block';
-            this.newImage = e.target.result;
+            var newImage = e.target.result;
+            var image_name = input.value.split("\\").pop();
+            console.log('loading new image');
+            this.controls_ws.send(JSON.stringify({'image_data': newImage, 'image_name': image_name}));
         }
         reader.readAsDataURL(input.files[0]);
-        this.image_name = input.value.split("\\").pop();
     },
-
-    loadImage: function() {
-        if(this.newImage){
-            console.log('loading new image');
-            this.controls_ws.send(JSON.stringify({'image_data': this.newImage, 'image_name': this.image_name}));
-        }
-    }
   }
 });
