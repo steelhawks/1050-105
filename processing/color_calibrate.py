@@ -69,14 +69,37 @@ def process(image,
                     cv2.LINE_AA)
 
     if main_controller.save_mask:
-        with open('./image_name.json') as json_file:
+        with open('./ml/image_name.json') as json_file:
             data = json.load(json_file)
-            data = data['image_name'].split(".")
-            image_name = data[0] + " (MASK)." + data[1]
-            print(image_name)
-            image_path = './maskPictures/' + image_name
+            image_name = data['image_name']
+            mask_name = image_name.split(".")
+            mask_name = mask_name[0] + " (MASK)." + mask_name[1]
+
+            currentMask = dict(hsv=color_profile.to_encodable()['hsv'],
+                               name=image_name)
+
+            try:
+                with open('./ml/mask_values.json') as read_file:
+                    existing = False
+                    maskValues = json.load(read_file)
+                    for mask in maskValues:
+                        if mask['name'] == data['image_name']:
+                            mask = currentMask
+                            existing = True
+                            break
+                    if not existing:
+                        maskValues.append(currentMask)
+            except:
+                print('no info existing in file')
+                maskValues = []
+                maskValues.append(currentMask)
+            finally:
+                with open('./ml/mask_values.json', 'w') as write_file:
+                    json.dump(maskValues, write_file, indent=4)
+
+            image_path = './ml/maskPictures/' + mask_name
             cv2.imwrite(image_path, image)
-            print('saving ball mask ' + image_name)
+            print('saving ball mask ' + mask_name)
             main_controller.save_mask = False
 
     return image

@@ -59,7 +59,7 @@ def start(websocket_url):
             url = controls['image_data']
             image_name = controls['image_name']
             name_json = {'image_name': image_name}
-            with open('image_name.json', 'w') as outfile:
+            with open('ml/image_name.json', 'w') as outfile:
                 json.dump(name_json, outfile)
             # logger.info(url)
             with request.urlopen(url) as new_file, open("test-image.jpg", 'wb') as out_file:
