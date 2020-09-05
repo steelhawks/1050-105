@@ -4,7 +4,6 @@ from os.path import abspath, dirname, join
 import config
 import logging
 import controls
-
 from processing.web.handlers import NonCachingStaticFileHandler
 from processing.web.handlers import ControllerWS
 from processing.web.handlers import ObjectTrackingWS

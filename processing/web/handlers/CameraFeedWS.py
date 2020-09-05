@@ -4,13 +4,14 @@ import logging
 import json
 logger = logging.getLogger(__name__)
 
-class CalibrationFeedWS(WebSocketHandler):
+class CameraFeedWS(WebSocketHandler):
     """
     """
     watchers = set()
     def open(self):
         self.uid = str(uuid.uuid4())
-        logger.info("CalibrationFeed websocket opened %s" % self.uid)
+        logger.info("CameraFeed websocket opened %s" % self.uid)
+        self.write_message('connected')
         self.write_message(json.dumps({
             'socketid':self.uid
         }))
@@ -29,14 +30,14 @@ class CalibrationFeedWS(WebSocketHandler):
         if isinstance(message, str):
             logger.info(message)
             if message == 'open feed':
-                CalibrationFeedWS.watchers.add(self)
+                CameraFeedWS.watchers.add(self)
             if message == 'close feed':
-                CalibrationFeedWS.watchers.remove(self)
+                CameraFeedWS.watchers.remove(self)
         else:
-            for waiter in CalibrationFeedWS.watchers:
+            for waiter in CameraFeedWS.watchers:
                 waiter.write_message(message, binary=True)
 
     def on_close(self):
-        logger.info("CalibrationFeed websocket closed %s" % self.uid)
-        # if self in CalibrationFeedWS.watchers:
-        #     CalibrationFeedWS.watchers.remove(self)
+        logger.info("CameraFeed websocket closed %s" % self.uid)
+        if self in CameraFeedWS.watchers:
+            CameraFeedWS.watchers.remove(self)

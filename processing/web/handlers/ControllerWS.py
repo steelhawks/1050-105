@@ -2,7 +2,6 @@ from os.path import abspath, dirname, join
 
 import uuid
 import logging
-import time
 import json
 import json as json_encode
 

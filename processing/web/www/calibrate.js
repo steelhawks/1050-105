@@ -11,8 +11,7 @@ new Vue({
     selected_color_mode: null,
     selected_profile: null,
     controls_ws: null,
-    apply_mask: false,
-    preview_display: false,
+    apply_mask: false
   },
   computed: {
     "values": function(){
@@ -130,22 +129,6 @@ new Vue({
         var self = this;
         self.controls_ws.send(JSON.stringify({'color_profile': self.selected_profile,
                                               'reset': true}))
-    },
-    saveMask: function() {
-        var self = this;
-        self.controls_ws.send(JSON.stringify({ request_type: 'saveMask' }))
-    },
-    changeImage: function() {
-        var input = this.$refs.imageSelector;
-        var reader = new FileReader();
-
-        reader.onload = (e) => {
-            var newImage = e.target.result;
-            var image_name = input.value.split("\\").pop();
-            console.log('loading new image');
-            this.controls_ws.send(JSON.stringify({'image_data': newImage, 'image_name': image_name}));
-        }
-        reader.readAsDataURL(input.files[0]);
-    },
+    }
   }
 });

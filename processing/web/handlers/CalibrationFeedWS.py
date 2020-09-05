@@ -38,5 +38,4 @@ class CalibrationFeedWS(WebSocketHandler):
 
     def on_close(self):
         logger.info("CalibrationFeed websocket closed %s" % self.uid)
-        # if self in CalibrationFeedWS.watchers:
-        #     CalibrationFeedWS.watchers.remove(self)
+        CalibrationFeedWS.watchers.remove(self)
