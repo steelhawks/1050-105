@@ -13,6 +13,7 @@ class ProcessedVideoWS(WebSocketHandler):
     def open(self):
         self.uid = str(uuid.uuid4())
         logger.info("ProcessedVideoWS websocket opened %s" % self.uid)
+        self.write_message('connected')
         ProcessedVideoWS.watchers.add(self)
 
     def check_origin(self, origin):

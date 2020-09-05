@@ -26,7 +26,7 @@ class ControllerWS(WebSocketHandler):
     def open(self):
         self.uid = str(uuid.uuid4())
         logger.info("Controller websocket opened")
-
+        self.write_message('connected')
         ControllerWS.watchers.add(self)
 
         self.ioloop = IOLoop.current()

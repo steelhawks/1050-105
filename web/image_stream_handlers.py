@@ -18,6 +18,7 @@ import tornado.websocket
 import logging
 import time
 
+logger = logging.getLogger('imagestream')
 import uuid
 
 import cv2
@@ -25,8 +26,6 @@ from PIL import Image
 from io import BytesIO
 from processing import colors
 from processing import cvfilters
-
-logger = logging.getLogger('imagestream')
 
 # not part of calibration anymore
 def convert_to_jpg(image):

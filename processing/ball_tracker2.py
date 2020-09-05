@@ -11,10 +11,6 @@ from processing import colors
 from processing import cvfilters
 from processing import shape_util
 
-import controls
-from controls import main_controller
-import uuid
-
 MIN_AREA = 15
 BALL_RADIUS = 3.5
 

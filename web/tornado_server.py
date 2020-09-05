@@ -5,14 +5,14 @@ import config
 import logging
 import controls
 
-from processing.web.handlers import NonCachingStaticFileHandler
-from processing.web.handlers import ControllerWS
-from processing.web.handlers import ObjectTrackingWS
-from processing.web.handlers import CameraFeedWS
-from processing.web.handlers import FarCameraFeedWS
-from processing.web.handlers import WideCameraFeedWS
-from processing.web.handlers import ProcessedVideoWS
-from processing.web.handlers import CalibrationFeedWS
+from web.handlers import NonCachingStaticFileHandler
+from web.handlers import ControllerWS
+from web.handlers import ObjectTrackingWS
+from web.handlers import CameraFeedWS
+from web.handlers import FarCameraFeedWS
+from web.handlers import WideCameraFeedWS
+from web.handlers import ProcessedVideoWS
+from web.handlers import CalibrationFeedWS
 
 from profiles.color_profile import ColorProfile
 from controls import main_controller
@@ -41,7 +41,7 @@ def start():
             (r"/wide_camera/ws", WideCameraFeedWS),
             (r"/far_camera/ws", FarCameraFeedWS),
             (r"/processed/ws", ProcessedVideoWS),
-            (r"/calibration/ws", CalibrationFeedWS ),
+            (r"/calibration/ws", CalibrationFeedWS),
             (r"/calibrate/()", NonCachingStaticFileHandler, {"path": join(www_dir, "calibrate.html")}),
             (r"/processing/()", NonCachingStaticFileHandler, {"path": join(www_dir, "processed.html")}),
             (r"/camera/()", NonCachingStaticFileHandler, {"path": join(www_dir, "camera.html")}),

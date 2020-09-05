@@ -15,10 +15,6 @@ from processing import colors
 from processing import cvfilters
 from processing import shape_util
 
-import controls
-from controls import main_controller
-import uuid
-
 MIN_AREA = 10
 PORT_LENGTH = 39.25
 
@@ -45,7 +41,7 @@ def process(img, camera, frame_cnt, color_profile):
     # img = cv2.erode(img, None, iterations=2)
     # img = cv2.dilate(img, None, iterations=2)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        
+
     # if debug:
     #     cv2.imshow('hsv', img)
 

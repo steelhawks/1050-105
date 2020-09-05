@@ -36,15 +36,6 @@
             <i class="form-icon"></i> Calibration Feed
           </label>
         </div>
-
-        <!-- Image Selector  -->
-        <div>
-          <label class="title mt-2" for="imageSelector">Processed Image:</label>
-          <br>
-          <input id="imageSelector"  ref="imageSelector" type="file" accept="image/jpeg, image/png" @change="changeImage">
-
-        </div>
-
       </div>
 
     </div>
@@ -188,10 +179,7 @@
               </div>
                 <div class="panel-footer">
                   <button @click="saveProfile" class="btn btn-primary btn-block">Save</button>
-                  <br>
                   <button @click="resetProfile" class="btn btn-block">Reset</button>
-                  <br>
-                  <button @click="saveMask" class="btn btn-block">Download Mask</button>
                 </div>
               </div>
           </div>

@@ -1,9 +1,5 @@
 import logging
-import config
 from controls import main_controller
-from shutil import copyfileobj
-import urllib.request as request
-import os
 import websocket
 import json
 import _thread as thread
@@ -22,8 +18,6 @@ def start(websocket_url):
 
             if controls['request_type'] == 'calibration':
                 main_controller.calibration = controls
-            if controls['request_type'] == 'saveMask':
-                main_controller.save_mask = True
 
 
         if 'controls' in controls:
@@ -54,16 +48,6 @@ def start(websocket_url):
             current_profile.update(profile)
 
         #logger.info(main_controller.color_profiles)
-
-        if 'image_data' in controls:
-            url = controls['image_data']
-            image_name = controls['image_name']
-            name_json = {'image_name': image_name}
-            with open('ml/image_name.json', 'w') as outfile:
-                json.dump(name_json, outfile)
-            # logger.info(url)
-            with request.urlopen(url) as new_file, open("test-image.jpg", 'wb') as out_file:
-                copyfileobj(new_file, out_file)
 
     def ws_closed(ws):
         logger.info('closed socket')

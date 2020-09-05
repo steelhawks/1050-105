@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from processing.web import tornado_server
+from web import tornado_server
 
 import logging
 #initiate the top level logger
