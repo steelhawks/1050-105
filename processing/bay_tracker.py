@@ -1,10 +1,13 @@
 """
-2019 Frc Deep Space
-Bay Detection
+2020 Frc Infinite Recharge
+Bay Intake Detection
 uses contour lines and 
 width/length ratios, area, 
 and vertices to check a masked image
 for the bay
+
+same as port tracker but with diff.
+object dimensions
 """
 
 import cv2
@@ -52,7 +55,6 @@ def process(img, camera, frame_cnt, color_profile):
                                               cv2.RETR_EXTERNAL,
                                               cv2.CHAIN_APPROX_SIMPLE)
     contour_list = []
-    contour_properties_list = []
     # algorithm for detecting rectangular object (loading bay)
     for (index, contour) in enumerate(contours):
 
@@ -70,7 +72,7 @@ def process(img, camera, frame_cnt, color_profile):
         cv2.putText(original_img, str(orientation), (x, y + h + 35), cv2.FONT_HERSHEY_DUPLEX, .4, colors.WHITE, 1, cv2.LINE_AA)
         #print(orientation)
         # limit the number of contours to process
-        
+        #
         num_vertices = shape_util.find_vertices(contour)
         if area > MIN_AREA:
             orientation = abs(orientation)
@@ -184,11 +186,8 @@ def process(img, camera, frame_cnt, color_profile):
             #
             # print 'square: %s,%s' % (w,h)
             # print w/h, h/w
-
-    
     top_center = (FRAME_WIDTH // 2, FRAME_HEIGHT)
     bottom_center = (FRAME_WIDTH // 2, 0)
     cv2.line(original_img, top_center, bottom_center, colors.WHITE, 4)
-
     return original_img, tracking_data
 
