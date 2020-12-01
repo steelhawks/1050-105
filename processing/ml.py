@@ -1,16 +1,14 @@
 """
-2020 Frc Infinite Recharge
-Ball Intake Detection
-uses contour lines, rough area calculations
-width/height ratios, and radius of contours found
-in masked image to find ball
+2021 Frc Infinite Recharge
+General ML Prediction (Four classes)
+uses tflite on transfer learning 
+trained MobileNetv2 model (640*640 FPN) 
+to detect powercells, loading bay, low 
+port, and high port.
 """
 
 import cv2
 import tensorflow as tf
-from processing import colors
-from processing import cvfilters
-from processing import shape_util
 
 debug = False
 
