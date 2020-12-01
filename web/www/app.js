@@ -5,9 +5,9 @@ new Vue({
   template: '#main-template',
   data: {
     controls: {
-        enable_camera: false,
-        // enable_processing: false,
-        camera_mode: 'RAW'
+      enable_camera: false,
+      // enable_processing: false,
+      camera_mode: 'RAW'
     },
     targets: []
   },
@@ -17,16 +17,16 @@ new Vue({
     start_camera_stream("/processed/ws", "processed_image");
   },
   watch: {
-    'controls.camera_mode': function(){
-      Socket.send({'controls':this.controls})
+    'controls.camera_mode': function () {
+      Socket.send({ 'controls': this.controls })
     }
   },
   methods: {
-    onTargetUpdate: function(key, value, isNew) {
-        //console.log(value);
-        this.targets = value
+    onTargetUpdate: function (key, value, isNew) {
+      //console.log(value);
+      this.targets = value
     },
-    update: function() {
+    update: function () {
       var self = this;
       // self.controls.camera_mode = mode;
       // Socket.send({'controls':self.controls})

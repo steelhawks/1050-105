@@ -1,3 +1,4 @@
 {
-  "python.pythonPath": "C:\\Users\\AMAdobe\\.virtualenvs\\ML-CV-FwMYimKO\\Scripts\\python.exe"
+    "git.ignoreLimitWarning": true,
+    "editor.tabSize": 2
 }

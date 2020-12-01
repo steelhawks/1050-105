@@ -14,12 +14,12 @@ new Vue({
     apply_mask: false
   },
   computed: {
-    "values": function(){
+    "values": function () {
       let selected_profile = this.selected_profile;
       let selected_color_mode = this.selected_color_mode;
 
-      if( selected_profile && selected_color_mode ){
-        if( selected_color_mode == 'rgb') {
+      if (selected_profile && selected_color_mode) {
+        if (selected_color_mode == 'rgb') {
           return [
             {
               name: 'R',
@@ -35,7 +35,7 @@ new Vue({
             }
           ]
         }
-        if( selected_color_mode == 'hsl') {
+        if (selected_color_mode == 'hsl') {
           return [
             {
               name: 'H',
@@ -51,7 +51,7 @@ new Vue({
             }
           ]
         }
-        if( selected_color_mode == 'hsv') {
+        if (selected_color_mode == 'hsv') {
           return [
             {
               name: 'H',
@@ -74,15 +74,15 @@ new Vue({
   mounted: function () {
     var self = this;
     self.controls_ws = new_web_socket('/dashboard/ws');
-    self.controls_ws.onmessage = function(msg) {
+    self.controls_ws.onmessage = function (msg) {
       var data = JSON.parse(msg.data)
       console.log(data);
-      if(data.hasOwnProperty('enable_calibration_feed')){
+      if (data.hasOwnProperty('enable_calibration_feed')) {
         self.enable_calibration_feed = data.enable_calibration_feed
       }
-      if(data.hasOwnProperty('color_profiles')){
+      if (data.hasOwnProperty('color_profiles')) {
         self.color_profiles = data.color_profiles;
-        if( self.selected_profile) {
+        if (self.selected_profile) {
           self.selected_profile = self.color_profiles[self.selected_profile.camera_mode]
         }
       }
@@ -91,44 +91,56 @@ new Vue({
     start_camera_stream("/calibration/ws", "image");
   },
   methods: {
-    toggleCalibrationFeed: function() {
-      this.controls_ws.send(JSON.stringify({request_type: 'controls',
-                                          enable_calibration_feed: !this.enable_calibration_feed}))
+    toggleCalibrationFeed: function () {
+      this.controls_ws.send(JSON.stringify({
+        request_type: 'controls',
+        enable_calibration_feed: !this.enable_calibration_feed
+      }))
     },
-    changeProfile: function(profile) {
+    changeProfile: function (profile) {
       this.selected_profile = profile;
-      this.controls_ws.send(JSON.stringify({request_type: 'calibration',
-                                          camera_mode:this.selected_profile.camera_mode,
-                                          color_mode: this.selected_color_mode,
-                                          apply_mask: this.apply_mask}));
+      this.controls_ws.send(JSON.stringify({
+        request_type: 'calibration',
+        camera_mode: this.selected_profile.camera_mode,
+        color_mode: this.selected_color_mode,
+        apply_mask: this.apply_mask
+      }));
     },
-    changeApplyMask: function() {
-      this.controls_ws.send(JSON.stringify({request_type: 'calibration',
-                                          camera_mode:this.selected_profile.camera_mode,
-                                          color_mode: this.selected_color_mode,
-                                          apply_mask: this.apply_mask}));
+    changeApplyMask: function () {
+      this.controls_ws.send(JSON.stringify({
+        request_type: 'calibration',
+        camera_mode: this.selected_profile.camera_mode,
+        color_mode: this.selected_color_mode,
+        apply_mask: this.apply_mask
+      }));
     },
-    changeColorMode: function(color_mode) {
+    changeColorMode: function (color_mode) {
       this.selected_color_mode = color_mode
-      this.controls_ws.send(JSON.stringify({ request_type: 'calibration',
-                                          camera_mode:this.selected_profile.camera_mode,
-                                          color_mode: this.selected_color_mode,
-                                          apply_mask: this.apply_mask}));
+      this.controls_ws.send(JSON.stringify({
+        request_type: 'calibration',
+        camera_mode: this.selected_profile.camera_mode,
+        color_mode: this.selected_color_mode,
+        apply_mask: this.apply_mask
+      }));
     },
-    updateColors: function() {
-        var self = this;
-        console.log(self.color_profiles)
-        self.controls_ws.send(JSON.stringify({'color_profile': self.selected_profile}))
+    updateColors: function () {
+      var self = this;
+      console.log(self.color_profiles)
+      self.controls_ws.send(JSON.stringify({ 'color_profile': self.selected_profile }))
     },
-    saveProfile: function() {
-        var self = this;
-        self.controls_ws.send(JSON.stringify({'color_profile': self.selected_profile,
-                                              'save': true}))
+    saveProfile: function () {
+      var self = this;
+      self.controls_ws.send(JSON.stringify({
+        'color_profile': self.selected_profile,
+        'save': true
+      }))
     },
-    resetProfile: function() {
-        var self = this;
-        self.controls_ws.send(JSON.stringify({'color_profile': self.selected_profile,
-                                              'reset': true}))
+    resetProfile: function () {
+      var self = this;
+      self.controls_ws.send(JSON.stringify({
+        'color_profile': self.selected_profile,
+        'reset': true
+      }))
     }
   }
 });
