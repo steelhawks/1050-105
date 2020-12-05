@@ -46,7 +46,7 @@ def process(img, camera, frame_cnt, color_profile):
     #     cv2.imshow('hsv', img)
 
 
-    _, contours, hierarchy = cv2.findContours(img,
+    contours, hierarchy = cv2.findContours(img,
                                               cv2.RETR_EXTERNAL,
                                               cv2.CHAIN_APPROX_SIMPLE)
 

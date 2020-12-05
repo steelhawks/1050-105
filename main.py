@@ -1,40 +1,37 @@
 import cv2
-import tensorflow as tf
 import config
+import controller_listener
+import controls
+import logging
+import start_web
 import time
 
-from multiprocessing import Process
+import _thread as thread
+import tensorflow as tf
+import ujson as json
+import websocket as ws
 
-from processing import colors
 from cameras.camera import USBCam, Camera
 from cameras import image_converter
 from cameras.video_async import VideoCaptureAsync
 
+from controls import main_controller
+from controls import CAMERA_MODE_RAW, CAMERA_MODE_LOADING_BAY, CAMERA_MODE_BALL, CAMERA_MODE_HEXAGON
+
+from multiprocessing import Process
+
+from processing import colors
 from processing import bay_tracker
 from processing import port_tracker
 from processing import ball_tracker2
 from processing import color_calibrate
 from processing import cvfilters
-
-import controls
-from controls import main_controller
-import controller_listener
+from processing import filters
+from processing import ml
 
 from profiles.color_profile import ColorProfile
 
-import _thread as thread
-import time
-
-from processing import filters
-
-from controls import CAMERA_MODE_RAW, CAMERA_MODE_LOADING_BAY, CAMERA_MODE_BALL, CAMERA_MODE_HEXAGON
-
-import logging
-
-import start_web
-import websocket as ws
 from websocket import create_connection
-import ujson as json
 
 # initiate the top level logger
 logging.basicConfig(
@@ -78,15 +75,15 @@ def main():  # main method defined
     cap = wideCam.getCam()
     # Set video properties
     camera = Camera(cap.get(cv2.CAP_PROP_FRAME_WIDTH),
-            cap.get(cv2.CAP_PROP_FRAME_HEIGHT),
-            cap.get(cv2.CAP_PROP_FPS))
+                    cap.get(cv2.CAP_PROP_FRAME_HEIGHT),
+                    cap.get(cv2.CAP_PROP_FPS))
 
 
   color_profile_map = {}
   for profile in [controls.CAMERA_MODE_RAW,
-          controls.CAMERA_MODE_BALL,
-          controls.CAMERA_MODE_HEXAGON,
-          controls.CAMERA_MODE_LOADING_BAY]:
+                  controls.CAMERA_MODE_BALL,
+                  controls.CAMERA_MODE_HEXAGON,
+                  controls.CAMERA_MODE_LOADING_BAY]:
     color_profile_map[profile] = ColorProfile(profile)
 
   main_controller.color_profiles = color_profile_map
@@ -114,8 +111,10 @@ def main():  # main method defined
   while (True):
 
     tracking_data = []
+    ml_data = []
 
     frame_cnt += 1
+    print(frame_cnt)
 
     if main_controller.enable_camera:
 
@@ -127,7 +126,7 @@ def main():  # main method defined
         # if the cap is not already open, do so
 
       if main_controller.enable_read_image:
-        wide_bgr_frame = cv2.imread("Screenshot.png")
+        wide_bgr_frame = cv2.imread("screenshot.jpg")
       else:
         _, wide_bgr_frame = wideVideo.read()
       wide_resized_frame = cvfilters.resize(wide_bgr_frame, 640, 480)
@@ -154,14 +153,18 @@ def main():  # main method defined
       if main_controller.enable_calibration_feed:
         if main_controller.camera_mode == CAMERA_MODE_HEXAGON:
           calibration_frame = far_rgb_frame.copy()
+
+          ml_data = ml.predict(calibration_frame, interpreter, input_details, output_details)
+
         else:
           calibration_frame = wide_rgb_frame.copy()
+        
+        
         calibration_frame = color_calibrate.process(calibration_frame,
                               camera_mode=main_controller.calibration.get('camera_mode',
                                                     'RAW'),
                               color_mode=main_controller.calibration.get('color_mode'),
-                              apply_mask=main_controller.calibration.get('apply_mask',
-                                                                                                       False))
+                              apply_mask=main_controller.calibration.get('apply_mask', False))
 
         jpg = image_converter.convert_to_jpg(calibration_frame)
         calibration_ws.send_binary(jpg)
@@ -175,6 +178,8 @@ def main():  # main method defined
 
         color_profile = main_controller.color_profiles[CAMERA_MODE_LOADING_BAY]
         # Set color profile to that of "camera mode loading bay"
+      
+        ml_data = ml.predict(wide_rgb_frame, interpreter, input_details, output_details)
 
         processed_frame, tracking_data = bay_tracker.process(wide_rgb_frame,
                                                                      camera,
@@ -188,6 +193,8 @@ def main():  # main method defined
           CAMERA_MODE_BALL]  # color profile set to the CAMERA MODE BALL one
         # print("ball")
 
+        ml_data = ml.predict(wide_rgb_frame, interpreter, input_details, output_details)
+
         processed_frame, tracking_data = ball_tracker2.process(wide_rgb_frame,
                                                                        camera,
                                                                        frame_cnt,
@@ -196,11 +203,15 @@ def main():  # main method defined
       elif main_controller.camera_mode == CAMERA_MODE_HEXAGON:
 
         color_profile = main_controller.color_profiles[CAMERA_MODE_HEXAGON]
+        
+        ml_data = ml.predict(far_rgb_frame, interpreter, input_details, output_details)
 
         processed_frame, tracking_data = port_tracker.process(far_rgb_frame,
                                                                       camera,
                                                                       frame_cnt,
                                                                       color_profile)
+
+      
 
       if main_controller.enable_processing_feed:  # once we start showing our processing feed...
 
