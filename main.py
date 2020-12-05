@@ -126,7 +126,7 @@ def main():  # main method defined
         # if the cap is not already open, do so
 
       if main_controller.enable_read_image:
-        wide_bgr_frame = cv2.imread("screenshot.jpg")
+        wide_bgr_frame = cv2.imread("screenshot.png")
       else:
         _, wide_bgr_frame = wideVideo.read()
       wide_resized_frame = cvfilters.resize(wide_bgr_frame, 640, 480)
@@ -154,8 +154,6 @@ def main():  # main method defined
         if main_controller.camera_mode == CAMERA_MODE_HEXAGON:
           calibration_frame = far_rgb_frame.copy()
 
-          ml_data = ml.predict(calibration_frame, interpreter, input_details, output_details)
-
         else:
           calibration_frame = wide_rgb_frame.copy()
         
@@ -181,10 +179,10 @@ def main():  # main method defined
       
         ml_data = ml.predict(wide_rgb_frame, interpreter, input_details, output_details)
 
-        processed_frame, tracking_data = bay_tracker.process(wide_rgb_frame,
-                                                                     camera,
-                                                                     frame_cnt,
-                                                                     color_profile)
+        tracking_data = bay_tracker.process(wide_rgb_frame,
+                                            camera,
+                                            frame_cnt,
+                                            color_profile)
         # Frame is displayed with bay tracking properties
 
       elif main_controller.camera_mode == CAMERA_MODE_BALL:
@@ -195,10 +193,16 @@ def main():  # main method defined
 
         ml_data = ml.predict(wide_rgb_frame, interpreter, input_details, output_details)
 
-        processed_frame, tracking_data = ball_tracker2.process(wide_rgb_frame,
-                                                                       camera,
-                                                                       frame_cnt,
-                                                                       color_profile)
+        tracking_data = ball_tracker2.process(wide_rgb_frame,
+                                              camera,
+                                              frame_cnt,
+                                              color_profile)
+
+        processed_frame, tracking_data = ball_tracker2.combine(wide_rgb_frame,
+                                                                tracking_data,
+                                                                ml_data,
+                                                                15)
+
 
       elif main_controller.camera_mode == CAMERA_MODE_HEXAGON:
 
@@ -206,10 +210,15 @@ def main():  # main method defined
         
         ml_data = ml.predict(far_rgb_frame, interpreter, input_details, output_details)
 
-        processed_frame, tracking_data = port_tracker.process(far_rgb_frame,
-                                                                      camera,
-                                                                      frame_cnt,
-                                                                      color_profile)
+        tracking_data = port_tracker.process(far_rgb_frame,
+                                              camera,
+                                              frame_cnt,
+                                              color_profile)
+        
+        processed_frame, tracking_data = port_tracker.combine(far_rgb_frame,
+                                                                tracking_data,
+                                                                ml_data,
+                                                                15)
 
       
 
@@ -231,7 +240,7 @@ def main():  # main method defined
         #     out.write(frame)
       if len(tracking_data) != 0 and main_controller.send_tracking_data:
         # sort tracking data by closests object
-        logger.info(tracking_data)
+        # logger.info(tracking_data)
         tracking_data = sorted(tracking_data, key=lambda i: i['dist'])
         tracking_ws.send(json.dumps(dict(targets=tracking_data)))
 
@@ -247,6 +256,8 @@ def main():  # main method defined
         if main_controller.enable_dual_camera:
           farCam.stop()
       time.sleep(.3)
+
+    cv2.waitKey(0)
 
     # if cv2.waitKey(1) & 0xFF == ord('q'):
     #     break

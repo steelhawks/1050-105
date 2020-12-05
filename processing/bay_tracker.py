@@ -16,8 +16,6 @@ from processing import cvfilters
 from processing import shape_util
 import time
 
-from profiles import color_profiles 
-
 MIN_AREA = 50
 BAY_LENGTH = 7
 
@@ -83,20 +81,20 @@ def process(img, camera, frame_cnt, color_profile):
                 
                 tracking_data.append(data)
                 
-                vertices_text = 'vertices:%s' % (num_vertices)
-                coordinate_text = 'x:%s y:%s ' % (center_mass_x, center_mass_y)
-                area_text = 'area:%s width:%s height:%s' % (area, w, h)
-                angle_text = 'angle:%.2f  distance:%.2f' % (angle, distance)
+                # vertices_text = 'vertices:%s' % (num_vertices)
+                # coordinate_text = 'x:%s y:%s ' % (center_mass_x, center_mass_y)
+                # area_text = 'area:%s width:%s height:%s' % (area, w, h)
+                # angle_text = 'angle:%.2f  distance:%.2f' % (angle, distance)
 
-                cv2.putText(original_img, coordinate_text, (x, y - 35), font, .4, colors.WHITE, 1, cv2.LINE_AA)
-                cv2.putText(original_img, area_text, (x, y - 20), font, .4, colors.WHITE, 1, cv2.LINE_AA)
-                cv2.putText(original_img, angle_text, (x, y - 5), font, .4, colors.WHITE, 1, cv2.LINE_AA)
-                cv2.putText(original_img, vertices_text, (x, y - 50), font, .4, colors.WHITE, 1, cv2.LINE_AA)
+                # cv2.putText(original_img, coordinate_text, (x, y - 35), font, .4, colors.WHITE, 1, cv2.LINE_AA)
+                # cv2.putText(original_img, area_text, (x, y - 20), font, .4, colors.WHITE, 1, cv2.LINE_AA)
+                # cv2.putText(original_img, angle_text, (x, y - 5), font, .4, colors.WHITE, 1, cv2.LINE_AA)
+                # cv2.putText(original_img, vertices_text, (x, y - 50), font, .4, colors.WHITE, 1, cv2.LINE_AA)
 
-                cv2.rectangle(original_img, (x, y), (x + w, y + h), colors.GREEN, 2)
-                cv2.drawContours(original_img, contours, index, colors.random(), 2)
-                #cv2.circle(original_img, (int(center_mass_x), int(center_mass_y)), 5, colors.GREEN, -1)
-                cv2.line(original_img, (FRAME_WIDTH // 2, FRAME_HEIGHT), (int(center_mass_x), int(center_mass_y)), colors.GREEN, 2)
+                # cv2.rectangle(original_img, (x, y), (x + w, y + h), colors.GREEN, 2)
+                # cv2.drawContours(original_img, contours, index, colors.random(), 2)
+                # #cv2.circle(original_img, (int(center_mass_x), int(center_mass_y)), 5, colors.GREEN, -1)
+                # cv2.line(original_img, (FRAME_WIDTH // 2, FRAME_HEIGHT), (int(center_mass_x), int(center_mass_y)), colors.GREEN, 2)
             # elif debug:
                 
                 # cv2.drawContours(original_img, contours, index, colors.random(), 2)
@@ -107,7 +105,7 @@ def process(img, camera, frame_cnt, color_profile):
             #
             # print 'square: %s,%s' % (w,h)
             # print w/h, h/w
-    top_center = (FRAME_WIDTH // 2, FRAME_HEIGHT)
-    bottom_center = (FRAME_WIDTH // 2, 0)
-    cv2.line(original_img, top_center, bottom_center, colors.WHITE, 4)
-    return original_img, tracking_data
+    # top_center = (FRAME_WIDTH // 2, FRAME_HEIGHT)
+    # bottom_center = (FRAME_WIDTH // 2, 0)
+    # cv2.line(original_img, top_center, bottom_center, colors.WHITE, 4)
+    return tracking_data
