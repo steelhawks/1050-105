@@ -124,7 +124,7 @@ def combine(img, tracking_data, ml_data, leeway):
 
   valid_tracking_data = []
 
-  alpha = 0.3
+  alpha = 0.6
 
   out_img = img.copy()
   overlay = img.copy()
@@ -140,7 +140,7 @@ def combine(img, tracking_data, ml_data, leeway):
       bottom = int(b_box[2] * height)
       right =  int(b_box[3] * width)
     
-      cv2.rectangle(overlay, (left, top), (right, bottom), colors.RED, -1)
+      cv2.rectangle(overlay, (left, top), (right, bottom), colors.BLACK, -1)
 
       for target in tracking_data:
         print(target)

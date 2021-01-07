@@ -11,7 +11,7 @@ from processing import colors
 from processing import cvfilters
 from processing import shape_util
 
-MIN_AREA = 15
+MIN_AREA = 5
 BALL_RADIUS = 3.5
 
 debug = False
@@ -155,15 +155,15 @@ def combine(img, tracking_data, ml_data, leeway):
         # print('left: ' + str(left) + '     right: ' + str(right) + '     acc: ' + str(target['xpos']))
         # print('top: ' + str(top) + '     bottom: ' + str(bottom) + '     acc: ' + str(target['ypos']))
 
-        if xpos_in_bounds and ypos_in_bounds:
+        if xpos_in_bounds and ypos_in_bounds and score > 0.0:
           valid_tracking_data.append(target)
           
   
   cv2.addWeighted(overlay, alpha, out_img, 1 - alpha, 0, out_img)
 
   for target in valid_tracking_data:
-    cv2.circle(out_img, (int(target['xpos']), int(target['ypos'])), int(target['radius']), colors.PURPLE, 2)
-    cv2.circle(out_img, (int(target['xpos']), int(target['ypos'])), 4, colors.PURPLE, -1)
+    cv2.circle(out_img, (int(target['xpos']), int(target['ypos'])), int(target['radius']), colors.BLUE, 2)
+    cv2.circle(out_img, (int(target['xpos']), int(target['ypos'])), 4, colors.BLUE, -1)
 
   return out_img, valid_tracking_data
 

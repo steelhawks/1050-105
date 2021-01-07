@@ -18,8 +18,8 @@ def dimensions_match(contour, vertices, range, desired_ratio):
             temp = w
             w = h
             h = temp
-        MIN_RATIO = desired_ratio * 0.80
-        MAX_RATIO = desired_ratio * 1.2
+        MIN_RATIO = desired_ratio * 0.60
+        MAX_RATIO = desired_ratio * 1.4
         #MIN_RATIO = desired_ratio * 0.6
         #MAX_RATIO = desired_ratio * 1.4
 

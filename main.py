@@ -63,7 +63,7 @@ def main():  # main method defined
     camera = Camera(1024, 768, 30)
   else:
     wideCam = USBCam()
-    wideCam.open(config.video_source_number)
+    wideCam.open(config.wide_video_source_number)
     wideVideo = VideoCaptureAsync(wideCam)
     wideVideo.startReading()
 
@@ -115,18 +115,21 @@ def main():  # main method defined
 
     frame_cnt += 1
     print(frame_cnt)
+    frame_cnt_str = str(frame_cnt)
+    frame_cnt_str = frame_cnt_str.zfill(4)
+    print(frame_cnt_str + '.jpg')
 
     if main_controller.enable_camera:
 
       if not main_controller.enable_read_image and not cap.isOpened():
         print('opening camera')
         if main_controller.enable_dual_camera:
-          farCam.open(config.video_source_number)
+          farCam.open(config.far_video_source_number)
         wideCam.open(config.wide_video_source_number)
         # if the cap is not already open, do so
 
       if main_controller.enable_read_image:
-        wide_bgr_frame = cv2.imread("screenshot.png")
+        wide_bgr_frame = cv2.imread(frame_cnt_str + '.jpg')
       else:
         _, wide_bgr_frame = wideVideo.read()
       wide_resized_frame = cvfilters.resize(wide_bgr_frame, 640, 480)
@@ -206,20 +209,19 @@ def main():  # main method defined
 
       elif main_controller.camera_mode == CAMERA_MODE_HEXAGON:
 
-        color_profile = main_controller.color_profiles[CAMERA_MODE_HEXAGON]
+        color_profile_hex = main_controller.color_profiles[CAMERA_MODE_HEXAGON]
         
         ml_data = ml.predict(far_rgb_frame, interpreter, input_details, output_details)
 
-        tracking_data = port_tracker.process(far_rgb_frame,
+        tracking_data_port = port_tracker.process(far_rgb_frame,
                                               camera,
                                               frame_cnt,
-                                              color_profile)
+                                              color_profile_hex)
         
         processed_frame, tracking_data = port_tracker.combine(far_rgb_frame,
-                                                                tracking_data,
+                                                                tracking_data_port,
                                                                 ml_data,
                                                                 15)
-
       
 
       if main_controller.enable_processing_feed:  # once we start showing our processing feed...

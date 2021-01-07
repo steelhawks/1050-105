@@ -20,7 +20,7 @@ function requestAnimFrame() {
 }
 
 function showFPS() {
-    ctx.fillStyle = "Black";
+    ctx.fillStyle = "White";
     ctx.font = "normal 16pt Arial";
     ctx.fillText(fps + " fps", 10, 26);
 }
