@@ -1,10 +1,10 @@
 <h1>1050-105</h1>
 <h5>Machine Learning-Computer Vision</h5>
 <br><br>
-<h2>What is ML-CV?</h2>
-<p>ML-CV is our 2021 Vision system which combines the benefits of a traditional OpenCV system with that of a Machine Learning model. We use traditioanl OpenCV filtering and masking tecniques alongside a TensorFlow Lite Object Detection model to accurately detect and pinpoint the location of a vision target or gamepiece.</p>
+<h2>What is 1050-105?</h2>
+<p>1050-105 is our 2021 Vision system which combines the benefits of a traditional OpenCV system with that of a Machine Learning model. We use traditioanl OpenCV filtering and masking tecniques alongside a TensorFlow Lite Object Detection model to accurately detect and pinpoint the location of a vision target or gamepiece.</p>
 <br><br>
-<h2>How does ML-CV work?</h2>
+<h2>How does 1050-105 work?</h2>
 <img src='readme_imgs\image.svg'>
 <br><br>
 <p>or in meme form...</p>
