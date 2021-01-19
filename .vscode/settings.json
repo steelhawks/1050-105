@@ -1,4 +1,5 @@
 {
     "git.ignoreLimitWarning": true,
-    "editor.tabSize": 2
+    "editor.tabSize": 2,
+    "python.pythonPath": "C:\\Users\\haliw\\AppData\\Local\\Programs\\Python\\Python36\\python3.6.exe"
 }

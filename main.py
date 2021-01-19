@@ -125,12 +125,12 @@ def main():  # main method defined
         print('opening camera')
         if main_controller.enable_dual_camera:
           farCam.open(config.far_video_source_number)
-        wideCam.open(config.wide_video_source_number)
         # if the cap is not already open, do so
 
       if main_controller.enable_read_image:
         wide_bgr_frame = cv2.imread(frame_cnt_str + '.jpg')
       else:
+        wideCam.open(config.wide_video_source_number)
         _, wide_bgr_frame = wideVideo.read()
       wide_resized_frame = cvfilters.resize(wide_bgr_frame, 640, 480)
       wide_rgb_frame = cv2.cvtColor(wide_resized_frame, cv2.COLOR_BGR2RGB)

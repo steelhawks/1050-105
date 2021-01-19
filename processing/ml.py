@@ -35,7 +35,6 @@ def detect_objects(interpreter):
         'score': scores[i]
     }
     results.append(result)
-    print(result)
   return results
 
 def predict(img, interpreter, input_details, output_details):
