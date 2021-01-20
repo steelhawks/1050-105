@@ -47,17 +47,7 @@ logger = logging.getLogger('app')
 
 # creating instance of logger object(?)
 
-def main():  # main method defined
-
-  # networktables.init(client=False)
-
-  # dashboard = networktables.get()
-  # dashboard.putBoolean(networktables.keys.vision_initialized, True)
-
-  cv2.destroyAllWindows()
-
-  # cap = cv2.VideoCapture(config.video_source_number)
-  # cap set to a cv2 object with input from a preset source
+def main():  
   if main_controller.enable_read_image:
     main_controller.enable_dual_camera = False
     camera = Camera(1024, 768, 30)
@@ -117,7 +107,7 @@ def main():  # main method defined
     print(frame_cnt)
     frame_cnt_str = str(frame_cnt)
     frame_cnt_str = frame_cnt_str.zfill(4)
-    print(frame_cnt_str + '.jpg')
+    print('test_imgs_and_vids/' + frame_cnt_str + '.jpg')
 
     if main_controller.enable_camera:
 
@@ -129,7 +119,7 @@ def main():  # main method defined
         # if the cap is not already open, do so
 
       if main_controller.enable_read_image:
-        wide_bgr_frame = cv2.imread(frame_cnt_str + '.jpg')
+        wide_bgr_frame = cv2.imread('test_imgs_and_vids/' + frame_cnt_str + '.jpg')
       else:
         _, wide_bgr_frame = wideVideo.read()
       wide_resized_frame = cvfilters.resize(wide_bgr_frame, 640, 480)
@@ -260,9 +250,6 @@ def main():  # main method defined
       time.sleep(.3)
 
     cv2.waitKey(0)
-
-    # if cv2.waitKey(1) & 0xFF == ord('q'):
-    #     break
 
 
 if __name__ == '__main__':
